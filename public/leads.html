@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Leads — VJC Ops Portal</title>
+<link rel="stylesheet" href="/css/style.css" />
+</head>
+
+<body>
+
+  <div class="app-shell">
+
+    <div class="sidebar" id="sidebar"></div>
+
+    <div class="main">
+
+            <div class="topbar">
+        <h1>Leads &amp; Agreements</h1>
+
+        <div class="who">
+          New lead + signed agreement moves straight into the Quality Audit queue
+        </div>
+
+                <button type="button" class="btn-primary" id="toggleManualAddBtn" style="margin-left:auto;width:auto;padding:11px 20px;white-space:nowrap">
+          + Add New Lead (Manual)
+        </button>
+      </div>
+
+
+      <!-- =========================
+           ADD NEW LEAD (hidden until "+ Add New Lead (Manual)" is clicked)
+      ========================== -->
+
+      <div class="section-card" id="manualAddSection" style="display:none">
+
+        <h3>Add New Lead (Agreement Signed)</h3>
+
+        <form id="leadForm">
+
+          <div class="form-inline-grid">
+
+            <div class="field">
+              <label>Student Name</label>
+              <input id="student_name" required />
+            </div>
+
+            <div class="field">
+              <label>Phone</label>
+              <input id="phone" required />
+            </div>
+
+            <div class="field">
+              <label>Email</label>
+              <input id="email" type="email" />
+            </div>
+
+            <div class="field">
+              <label>Target Country</label>
+              <input id="target_country" required />
+            </div>
+
+            <div class="field">
+              <label>Visa Category</label>
+              <input id="visa_category" required />
+            </div>
+
+            <div class="field">
+              <label>Package Amount (₹)</label>
+              <input
+                id="package_amount"
+                type="number"
+                min="0"
+              />
+            </div>
+
+          </div>
+
+          <button
+            class="btn-primary"
+            style="width:200px"
+            type="submit"
+          >
+            + Add Lead
+          </button>
+
+        </form>
+
+      </div>
+
+
+      <!-- =========================
+           STAT CARDS
+      ========================== -->
+
+      <div class="stat-grid" id="leadStatGrid"></div>
+
+<!-- =========================
+     MODERN LEAD FILTERS
+========================== -->
+
+<div class="lead-filter-bar" id="leadTabs">
+
+  <button
+    type="button"
+    class="tab-btn active"
+    data-tab="my"
+  >
+    <span class="lead-filter-icon">👤</span>
+
+    <span class="lead-filter-text">
+      <strong>My Leads (Counsellor)</strong>
+      <small>Leads assigned to me</small>
+    </span>
+
+    <span class="lead-filter-count" id="myLeadCount">
+      0
+    </span>
+  </button>
+
+
+  <button
+    type="button"
+    class="tab-btn"
+    data-tab="auditor"
+  >
+    <span class="lead-filter-icon">➤</span>
+
+    <span class="lead-filter-text">
+      <strong>Sent to Auditor</strong>
+      <small>Leads sent for quality audit</small>
+    </span>
+
+    <span class="lead-filter-count" id="auditorLeadCount">
+      0
+    </span>
+  </button>
+
+
+  <button
+    type="button"
+    class="tab-btn"
+    data-tab="returned"
+  >
+    <span class="lead-filter-icon">✕</span>
+
+    <span class="lead-filter-text">
+      <strong>Returned / Rejected</strong>
+      <small>Leads returned from audit</small>
+    </span>
+
+    <span class="lead-filter-count" id="returnedLeadCount">
+      0
+    </span>
+  </button>
+
+
+  <button
+    type="button"
+    class="tab-btn"
+    data-tab="all"
+  >
+    <span class="lead-filter-icon">👥</span>
+
+    <span class="lead-filter-text">
+      <strong>All Leads</strong>
+      <small>View all leads in system</small>
+    </span>
+
+    <span class="lead-filter-count" id="allLeadCount">
+      0
+    </span>
+  </button>
+
+
+  <div class="lead-filter-divider"></div>
+
+
+  <div class="lead-search-box">
+
+    <span class="lead-search-icon">⌕</span>
+
+    <input
+      type="text"
+      id="leadSearch"
+      placeholder="Search by student name, country, visa..."
+    />
+
+  </div>
+
+
+  <button
+    type="button"
+    class="lead-filter-action"
+    id="leadFilterBtn"
+  >
+    ⚱ Filters
+  </button>
+
+</div>
+
+      <!-- =========================
+           ALL LEADS
+      ========================== -->
+
+      <div class="section-card">
+
+        <h3>Leads</h3>
+
+        <table>
+
+<thead>
+  <tr>
+    <th style="color:#000; font-weight:700;">S.No</th>
+    <th style="color:#000; font-weight:700;">Student</th>
+    <th style="color:#000; font-weight:700;">Country</th>
+    <th style="color:#000; font-weight:700;">Visa</th>
+    <th style="color:#000; font-weight:700;">Status</th>
+    <th style="color:#000; font-weight:700;">Created</th>
+    <th style="color:#000; font-weight:700;">Action</th>
+  </tr>
+</thead>
+
+          <tbody id="leadsBody">
+
+<tr>
+  <td
+    colspan="7"
+    class="empty-state"
+  >
+    Loading…
+  </td>
+</tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       INVOICE LEAD REVIEW MODAL
+  ========================== -->
+
+  <div
+    id="invoiceReviewModal"
+    class="modal-overlay"
+    style="display:none;"
+  >
+    <div class="modal-box">
+      <h2>Review — Lead from Invoice</h2>
+      <table>
+        <tbody id="invoiceReviewBody"></tbody>
+      </table>
+      <div style="display:flex;gap:10px;margin-top:15px;">
+        <button type="button" class="btn-primary" id="confirmInvoiceLeadBtn">Confirm &amp; Add Lead</button>
+        <button type="button" class="btn-secondary" id="closeInvoiceReviewBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- =========================
+       AUDIT CORRECTION MODAL
+  ========================== -->
+  <div
+    id="correctionModal"
+    class="modal-overlay"
+    style="display:none;"
+  >
+
+    <div class="modal-box">
+
+      <h2>Audit Correction</h2>
+
+      <div
+        id="correctionAuditReason"
+        class="audit-reason"
+      ></div>
+
+
+      <div class="field">
+
+        <label>What did you correct?</label>
+
+        <textarea
+          id="correctionDetails"
+          rows="6"
+          placeholder="Explain what was corrected based on the auditor's remarks..."
+        ></textarea>
+
+      </div>
+
+
+      <div
+        style="
+          display:flex;
+          gap:10px;
+          margin-top:15px;
+        "
+      >
+
+        <button
+          type="button"
+          class="btn-primary"
+          id="saveCorrectionBtn"
+        >
+          Save Correction &amp; Resubmit
+        </button>
+
+
+        <button
+          type="button"
+          class="btn-secondary"
+          id="closeCorrectionBtn"
+        >
+          Cancel
+        </button>
+
+      </div>
+
+
+      <div
+        id="correctionError"
+        style="margin-top:10px;"
+      ></div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       JAVASCRIPT
+       MUST COME AFTER MODAL
+  ========================== -->
+
+  <script src="/js/api.js"></script>
+  <script src="/js/leads.js"></script>
+
+</body>
+</html>

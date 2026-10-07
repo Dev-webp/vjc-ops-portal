@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VJC Ops Portal — Login</title>
+<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+<div class="login-wrap">
+  <div class="login-card">
+
+    <!-- LEFT BRAND PANEL -->
+    <div class="login-side">
+
+      <div class="ops-visual">
+        <div class="visual-orbit orbit-1"></div>
+        <div class="visual-orbit orbit-2"></div>
+
+        <div class="visual-node node-doc">&#128196;</div>
+        <div class="visual-node node-check">&#10003;</div>
+        <div class="visual-node node-users">&#128101;</div>
+        <div class="visual-node node-chart">&#128202;</div>
+
+        <div class="visual-shield">
+          <div class="shield-icon">&#128274;</div>
+        </div>
+      </div>
+
+      <div class="login-side-content">
+        <h2>Audit &amp; Case Filing<br />Operations</h2>
+
+        <p class="side-tagline">
+          Verify every promise, track every case —
+          audit to visa outcome, on one platform.
+        </p>
+
+        <div class="login-feature">
+          <div class="tick">&#10003;</div>
+          <div>
+            <strong>Quality Audit Verification</strong>
+            <span>Recorded call review, 1–10 scorecard, pass/fail gating.</span>
+          </div>
+        </div>
+
+        <div class="login-feature">
+          <div class="tick">&#128196;</div>
+          <div>
+            <strong>Case Filing Kanban</strong>
+            <span>Track every file across the 9-stage visa filing pipeline.</span>
+          </div>
+        </div>
+
+        <div class="login-feature">
+          <div class="tick">&#128202;</div>
+          <div>
+            <strong>Live Approval Insights</strong>
+            <span>See approved vs rejected counts at a glance.</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- RIGHT LOGIN PANEL -->
+    <div class="login-form-side">
+
+<img
+  src="/images/vjc-logo.png"
+  alt="VJC Overseas"
+  class="brand-logo-image"
+/>
+      <div class="brand-sub">VJC OVERSEAS</div>
+
+      <div class="brand-title">
+        IMMIGRATION &amp; VISA CONSULTANTS
+      </div>
+
+      <div class="product-title">
+        VJC OPS PORTAL
+      </div>
+
+      <div class="product-divider"></div>
+
+      <div class="product-tagline">
+        Verify every promise, track every case — audit to visa
+        outcome, on one screen.
+      </div>
+
+
+      <form id="loginForm" class="login-form">
+
+        <div class="field">
+          <label>Email</label>
+
+          <div class="input-wrap">
+            <span class="input-icon">&#9993;</span>
+
+            <input
+              type="email"
+              id="email"
+              placeholder="you@vjcoverseas.com"
+              required
+            />
+          </div>
+        </div>
+
+
+        <div class="field">
+          <label>Password</label>
+
+          <div class="input-wrap">
+            <span class="input-icon">&#128274;</span>
+
+            <input
+              type="password"
+              id="password"
+              placeholder="••••••••••"
+              required
+            />
+
+<span class="password-eye" id="passwordEye">&#128065;</span>          </div>
+        </div>
+
+
+        <div class="login-row">
+
+          <label class="remember-label">
+            <input type="checkbox" />
+            <span>Remember Me</span>
+          </label>
+
+          <a href="#" onclick="return false;">
+            Forgot your password?
+          </a>
+
+        </div>
+
+
+        <div class="error-msg" id="errorMsg"></div>
+
+
+<button type="submit" class="btn-primary">
+  LOGIN
+</button>
+
+<div class="form-footnote">
+  VJC Overseas Immigration &amp; Visa Consultants
+</div>
+
+    </div>
+
+  </div>
+</div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/login.js"></script>
+</body>
+</html>

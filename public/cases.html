@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Case Filing Ops — VJC Ops Portal</title>
+<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <div class="sidebar" id="sidebar"></div>
+    <div class="main">
+      <div class="topbar">
+  <h1 id="casesPageTitle">
+    Case <span style="color:#f28c18; font-weight:800;">Processing</span>
+  </h1>
+
+  <div class="case-date-filters">
+  <input
+    type="date"
+    id="caseDate"
+    title="Updated date"
+  />
+</div>
+</div>
+
+      <div class="section-card" id="unassignedSection">
+        <h3>Audit-Approved — Waiting for Case Officer Assignment</h3>
+        <table>
+<thead>
+  <tr>
+    <th>#</th>
+    <th>Client</th>
+    <th>Country</th>
+    <th>Visa Type</th>
+    <th>Case Officer</th>
+    <th>Documents</th>
+    <th>Stage</th>
+    <th>Updated</th>
+    <th>Actions</th>
+  </tr>
+</thead>
+
+<tbody id="unassignedBody">
+  <tr>
+    <td colspan="9" class="empty-state">Loading…</td>
+  </tr>
+</tbody>
+        </table>
+      </div>
+<!-- =========================================================
+     CASE PROCESSING KPI CARDS
+     ========================================================= -->
+
+<div class="case-processing-kpis">
+
+  <div class="case-kpi-card kpi-blue">
+    <div class="case-kpi-icon">👥</div>
+    <div class="case-kpi-content">
+      <div class="case-kpi-value" id="kpiTotalActiveCases">0</div>
+      <div class="case-kpi-title">Total Active Cases</div>
+      <div class="case-kpi-subtitle">All currently active cases</div>
+    </div>
+  </div>
+
+  <div class="case-kpi-card kpi-purple">
+    <div class="case-kpi-icon">📄</div>
+    <div class="case-kpi-content">
+      <div class="case-kpi-value" id="kpiDocumentsPending">0</div>
+      <div class="case-kpi-title">Documents Pending</div>
+      <div class="case-kpi-subtitle">Cases waiting for documents</div>
+    </div>
+  </div>
+
+  <div class="case-kpi-card kpi-teal">
+    <div class="case-kpi-icon">⚙️</div>
+    <div class="case-kpi-content">
+      <div class="case-kpi-value" id="kpiInProcessing">0</div>
+      <div class="case-kpi-title">In Processing</div>
+      <div class="case-kpi-subtitle">Cases currently being processed</div>
+    </div>
+  </div>
+
+  <div class="case-kpi-card kpi-orange">
+    <div class="case-kpi-icon">🛂</div>
+    <div class="case-kpi-content">
+      <div class="case-kpi-value" id="kpiVisaApproved">0</div>
+      <div class="case-kpi-title">Visa Approved</div>
+      <div class="case-kpi-subtitle">Cases with visa approved</div>
+    </div>
+  </div>
+
+  <div class="case-kpi-card kpi-green">
+    <div class="case-kpi-icon">✓</div>
+    <div class="case-kpi-content">
+      <div class="case-kpi-value" id="kpiCaseClosed">0</div>
+      <div class="case-kpi-title">Case Closed</div>
+      <div class="case-kpi-subtitle">Successfully completed cases</div>
+    </div>
+  </div>
+
+</div>
+      <div class="section-card" id="activeCasesSection">
+
+        <div class="active-cases-header">
+          <div>
+            <h3>Active Cases</h3>
+            <div class="active-cases-subtitle">
+              Manage and track all client cases across different stages
+            </div>
+          </div>
+
+          <div class="active-cases-filters">
+
+  <select id="caseStageFilter">
+    <option value="ALL">All stages</option>
+  </select>
+
+  <select id="caseOfficerFilter">
+    <option value="ALL">All officers</option>
+  </select>
+
+  <input
+    type="text"
+    id="caseSearch"
+    placeholder="Search by client name, passport, invoice..."
+  />
+
+</div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="cases-list-table">
+
+            <thead>
+  <tr>
+    <th>#</th>
+    <th>Client</th>
+    <th>Country</th>
+    <th>Visa Type</th>
+    <th>Case Officer</th>
+    <th>Documents</th>
+    <th>Rejected Files</th>
+    <th>Stage</th>
+    <th>Updated</th>
+    <th>Actions</th>
+  </tr>
+</thead>
+
+            <tbody id="activeCasesBody">
+              <tr>
+                <td colspan="10" class="empty-state">
+  Loading…
+</td>
+              </tr>
+            </tbody>
+
+          </table>
+        </div>
+
+        <div
+          id="casesPagination"
+          class="cases-pagination"
+        ></div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="assignModal" style="display:none">
+    <div class="modal-box">
+      <h3>Assign Case Officer</h3>
+      <form id="assignForm">
+        <input type="hidden" id="assignLeadId" />
+        <div class="field">
+          <label>Case Officer</label>
+          <select id="officerSelect" required></select>
+        </div>
+        <div class="field">
+          <label>Target University (optional)</label>
+          <input id="targetUniversity" />
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-sm outline" id="cancelAssign">Cancel</button>
+          <button type="submit" class="btn-sm orange">Assign</button>
+        </div>
+      </form>
+    </div>
+    </div>
+
+  <!-- Invoice Details Modal -->
+<div class="modal-overlay" id="invoiceDetailsModal" style="display:none">
+
+  <div class="modal-box" style="max-width:600px;max-height:85vh;overflow-y:auto">
+
+    <h3>Invoice Details</h3>
+
+    <table>
+      <tbody id="invoiceDetailsBody">
+      </tbody>
+    </table>
+
+    <div class="modal-actions">
+      <button
+        type="button"
+        class="btn-sm outline"
+        onclick="document.getElementById('invoiceDetailsModal').style.display='none'"
+      >
+        Close
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Visa Outcome Modal -->
+<div class="modal-overlay" id="outcomeModal" style="display:none">
+
+  <div class="modal-box">
+
+    <h3>Visa Outcome</h3>
+
+    <form id="outcomeForm">
+
+      <input type="hidden" id="outcomeCaseId" />
+
+      <div class="field">
+        <label>Result</label>
+
+        <select id="outcomeStatus">
+          <option value="APPROVED">Visa Approved</option>
+          <option value="REJECTED">Visa Rejected</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Note</label>
+
+        <textarea id="outcomeNote" rows="2"></textarea>
+      </div>
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          class="btn-sm outline"
+          id="cancelOutcome"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          class="btn-sm orange"
+        >
+          Save Outcome
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+<!-- Rejected Documents Modal -->
+<div class="modal-overlay" id="rejectedDocumentsModal" style="display:none">
+  <div class="modal-box" style="max-width:600px;">
+
+    <div class="documents-modal-header">
+      <div>
+        <h3>Rejected Documents</h3>
+
+        <div class="documents-modal-subtitle">
+          Documents rejected during case processing
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="documents-close-btn"
+        onclick="closeRejectedDocuments()"
+        aria-label="Close"
+      >
+        ×
+      </button>
+    </div>
+
+    <div id="rejectedDocumentsBody"></div>
+
+    <div class="documents-modal-footer">
+      <button
+        type="button"
+        class="btn-sm outline"
+        onclick="closeRejectedDocuments()"
+      >
+        Close
+      </button>
+    </div>
+
+  </div>
+</div>
+
+  <div class="modal-overlay" id="documentsModal" style="display:none">
+  <div class="modal-box documents-modal-box">
+
+    <div class="documents-modal-header">
+      <div>
+        <h3 id="documentsTitle">Documents</h3>
+        <div class="documents-modal-subtitle">
+          View, upload and verify case documents
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="documents-close-btn"
+        id="closeDocuments"
+        aria-label="Close"
+      >
+        ×
+      </button>
+    </div>
+
+    <input type="hidden" id="documentsCaseId" />
+
+    <div class="documents-section">
+      <div class="documents-section-header">
+        <div>
+          <h4>Required Documents</h4>
+          <span>Case documents submitted by the client</span>
+        </div>
+      </div>
+
+      <div class="documents-table-wrap">
+        <table class="documents-table">
+          <thead>
+            <tr>
+              <th>Document Type</th>
+              <th>File</th>
+              <th>Uploaded By</th>
+              <th>Verification</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody id="documentsBody">
+            <tr>
+              <td colspan="5" class="empty-state">
+                Loading…
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="documents-section additional-documents-section">
+
+      <div class="documents-section-header">
+        <div>
+          <h4>Additional Documents</h4>
+          <span>Supporting files added during case processing</span>
+        </div>
+      </div>
+
+      <div class="documents-table-wrap">
+        <table class="documents-table">
+          <thead>
+            <tr>
+              <th>File</th>
+              <th>Uploaded By</th>
+              <th>Verification</th>
+            </tr>
+          </thead>
+
+          <tbody id="additionalDocsBody">
+            <tr>
+              <td colspan="3" class="empty-state">
+                None yet.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <label class="documents-upload-btn">
+        <span>＋ Add Additional Document</span>
+
+        <input
+          type="file"
+          id="additionalDocInput"
+          accept=".pdf,.jpg,.jpeg,.png"
+          style="display:none"
+        />
+      </label>
+
+    </div>
+
+    <div class="documents-modal-footer">
+      <button
+        type="button"
+        class="btn-sm outline"
+        onclick="document.getElementById('documentsModal').style.display='none'"
+      >
+        Close
+      </button>
+    </div>
+
+  </div>
+</div>
+
+  <div class="modal-overlay" id="caseDetailsModal" style="display:none">
+
+  <div class="modal-box case-details-modal-box">
+
+    <!-- HEADER -->
+    <div class="case-details-header">
+
+      <div>
+        <div class="case-details-title-row">
+          <h3 id="caseDetailsTitle">Case Details</h3>
+          <span class="case-details-case-badge" id="caseDetailsCaseBadge">
+            Case
+          </span>
+        </div>
+
+        <div class="case-details-header-subtitle">
+          Complete case information and processing details
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="case-details-close-btn"
+        id="closeCaseDetails"
+        aria-label="Close"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <input type="hidden" id="caseDetailsCaseId" />
+
+    <!-- TOP CLIENT / INVOICE SUMMARY -->
+    <div class="case-details-summary">
+
+      <!-- CLIENT -->
+      <div class="case-summary-client">
+
+        <div class="case-client-avatar" id="case_summary_avatar">
+          VV
+        </div>
+
+        <div class="case-summary-client-info">
+
+          <div
+            class="case-summary-client-name"
+            id="case_summary_client_name"
+          >
+            Vanaja Vadlamudi
+          </div>
+
+          <div class="case-summary-contact-row">
+
+            <span>
+              ☎
+              <span id="case_summary_phone">-</span>
+            </span>
+
+            <span>
+              ✉
+              <span id="case_summary_email">-</span>
+            </span>
+
+          </div>
+
+          <div class="case-summary-meta-row">
+
+            <span>
+              ◉
+              <span id="case_summary_country">-</span>
+            </span>
+
+            <span class="case-summary-category">
+              <span id="case_summary_visa_category">-</span>
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- INVOICE -->
+      <div class="case-summary-invoice">
+
+        <div class="case-summary-invoice-top">
+
+          <div>
+            <div class="case-summary-label">
+              Invoice No
+            </div>
+
+            <div
+              class="case-summary-invoice-number"
+              id="case_summary_invoice_number"
+            >
+              -
+            </div>
+          </div>
+
+          <span
+            class="case-summary-payment-badge"
+            id="case_summary_payment_status"
+          >
+            Pending
+          </span>
+
+        </div>
+
+
+        <div class="case-summary-amounts">
+
+          <div>
+            <div class="case-summary-label">
+              Total Amount
+            </div>
+            <strong id="case_summary_total_amount">
+              ₹0
+            </strong>
+          </div>
+
+          <div>
+            <div class="case-summary-label">
+              Paid Amount
+            </div>
+            <strong
+              class="case-summary-paid"
+              id="case_summary_paid_amount"
+            >
+              ₹0
+            </strong>
+          </div>
+
+          <div>
+            <div class="case-summary-label">
+              Outstanding
+            </div>
+            <strong
+              class="case-summary-outstanding"
+              id="case_summary_outstanding_amount"
+            >
+              ₹0
+            </strong>
+          </div>
+
+        </div>
+
+
+        <div class="case-summary-bottom">
+
+          <div>
+            <div class="case-summary-label">
+              Sent to OPS By
+            </div>
+
+            <strong id="case_summary_sent_to_ops">
+              -
+            </strong>
+          </div>
+
+          <div class="case-summary-agreement">
+
+            <div class="case-summary-label">
+              Agreement
+            </div>
+
+            <a
+              id="case_summary_agreement"
+              href="#"
+              target="_blank"
+              style="display:none"
+            >
+              View Agreement PDF ↗
+            </a>
+
+            <span id="case_summary_no_agreement">
+              Not available
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- TABS -->
+<div class="case-details-tabs">
+
+  <button
+    type="button"
+    class="case-details-tab active"
+    data-tab="overview"
+  >
+    Overview
+  </button>
+
+  <button
+    type="button"
+    class="case-details-tab"
+    data-tab="university"
+  >
+    University
+  </button>
+
+  <button
+    type="button"
+    class="case-details-tab"
+    data-tab="offer"
+  >
+    Offer
+  </button>
+<button
+  type="button"
+  class="case-details-tab"
+  data-tab="financial"
+>
+  Financial
+</button>
+
+<button
+  type="button"
+  class="case-details-tab"
+  data-tab="embassy"
+>
+  Embassy
+</button>
+  <button
+    type="button"
+    class="case-details-tab"
+    data-tab="visa"
+  >
+    Visa
+  </button>
+
+  <button
+    type="button"
+    class="case-details-tab"
+    data-tab="biometrics"
+  >
+    Biometrics
+  </button>
+
+  <button
+    type="button"
+    class="case-details-tab"
+    data-tab="predeparture"
+  >
+    Pre-Departure
+  </button>
+
+  <button
+    type="button"
+    class="case-details-tab"
+    data-tab="travel"
+  >
+    Travel
+  </button>
+
+  <button
+    type="button"
+    class="case-details-tab"
+    data-tab="onboarding"
+  >
+    Onboarding
+  </button>
+
+</div>
+
+<!-- Client & Invoice Details -->
+<fieldset class="case-summary-section">
+
+  <legend>
+    <strong>Client & Invoice Details</strong>
+  </legend>
+
+  <div class="case-summary-grid">
+
+    <div class="case-summary-item">
+      <span>Client Name</span>
+      <input id="case_client_name" readonly />
+    </div>
+
+    <div class="case-summary-item">
+      <span>Phone Number</span>
+      <input id="case_client_phone" readonly />
+    </div>
+
+    <div class="case-summary-item">
+      <span>Email</span>
+      <input id="case_client_email" readonly />
+    </div>
+
+    <div class="case-summary-item">
+      <span>Country</span>
+      <input id="case_client_country" readonly />
+    </div>
+
+    <div class="case-summary-item">
+      <span>Visa Category</span>
+      <input id="case_visa_category" readonly />
+    </div>
+
+    <div class="case-summary-item">
+      <span>Invoice Number</span>
+      <input id="case_invoice_number" readonly />
+    </div>
+
+    <div class="case-summary-item">
+      <span>Total Amount</span>
+      <input id="case_total_amount" readonly />
+    </div>
+
+    <div class="case-summary-item">
+      <span>Paid Amount</span>
+      <input id="case_paid_amount" readonly />
+    </div>
+
+    <div class="case-summary-item">
+      <span>Outstanding Amount</span>
+      <input id="case_outstanding_amount" readonly />
+    </div>
+
+    <div class="case-summary-item">
+      <span>Payment Status</span>
+      <input id="case_payment_status" readonly />
+    </div>
+
+    <div class="case-summary-item">
+      <span>Sent to OPS By</span>
+      <input id="case_sent_to_ops_by" readonly />
+    </div>
+
+    <div class="case-summary-item">
+      <span>Agreement</span>
+
+      <div class="case-agreement-box">
+
+        <a
+          id="case_agreement_pdf"
+          href="#"
+          target="_blank"
+          style="display:none"
+        >
+          View Agreement PDF
+        </a>
+
+        <span id="case_no_agreement">
+          Not available
+        </span>
+
+      </div>
+    </div>
+
+  </div>
+
+</fieldset>
+<fieldset style="margin-bottom:16px">
+  <legend><strong>Financial Documentation</strong></legend>
+
+  <div class="form-inline-grid">
+
+    <div class="field">
+      <label>Financial Institution</label>
+      <input id="fd_financial_institution" />
+    </div>
+
+    <div class="field">
+      <label>Funds Amount</label>
+      <input id="fd_funds_amount" type="number" step="0.01" />
+    </div>
+
+    <div class="field">
+      <label>Currency</label>
+      <input id="fd_currency" value="INR" />
+    </div>
+
+    <div class="field">
+      <label>Document Type</label>
+      <input
+        id="fd_document_type"
+        placeholder="e.g. Bank Statement"
+      />
+    </div>
+
+    <div class="field">
+      <label>Document Date</label>
+      <input id="fd_document_date" type="date" />
+    </div>
+
+    <div class="field">
+      <label>Verification Status</label>
+      <select id="fd_verification_status">
+        <option value="PENDING">Pending</option>
+        <option value="VERIFIED">Verified</option>
+        <option value="REJECTED">Rejected</option>
+      </select>
+    </div>
+
+  </div>
+
+  <div class="field">
+    <label>Notes</label>
+    <textarea id="fd_notes" rows="3"></textarea>
+  </div>
+
+  <button
+    type="button"
+    class="btn-sm"
+    onclick="saveFinancialDocumentation()"
+  >
+    Save Financial Documentation
+  </button>
+</fieldset>
+<fieldset style="margin-bottom:16px">
+  <legend><strong>Embassy Slot</strong></legend>
+
+  <div class="form-inline-grid">
+
+    <div class="field">
+      <label>Embassy / VFS Center</label>
+      <input id="es_embassy_vfs_center" />
+    </div>
+
+    <div class="field">
+      <label>Appointment Date</label>
+      <input id="es_appointment_date" type="date" />
+    </div>
+
+    <div class="field">
+      <label>Appointment Time</label>
+      <input id="es_appointment_time" type="time" />
+    </div>
+
+    <div class="field">
+      <label>Location</label>
+      <input id="es_location" />
+    </div>
+
+    <div class="field">
+      <label>Reference Number</label>
+      <input id="es_reference_number" />
+    </div>
+
+    <div class="field">
+      <label>Appointment Status</label>
+      <select id="es_appointment_status">
+        <option value="PENDING">Pending</option>
+        <option value="BOOKED">Booked</option>
+        <option value="COMPLETED">Completed</option>
+        <option value="CANCELLED">Cancelled</option>
+        <option value="RESCHEDULED">Rescheduled</option>
+      </select>
+    </div>
+
+  </div>
+
+  <div class="field">
+    <label>Notes</label>
+    <textarea id="es_notes" rows="3"></textarea>
+  </div>
+
+  <button
+    type="button"
+    class="btn-sm"
+    onclick="saveEmbassySlot()"
+  >
+    Save Embassy Slot
+  </button>
+</fieldset>
+<fieldset style="margin-bottom:16px">
+  <legend><strong>University Application</strong></legend>
+        <div class="form-inline-grid">
+          <div class="field"><label>University</label><input id="ua_university" /></div>
+          <div class="field"><label>Course</label><input id="ua_course" /></div>
+          <div class="field"><label>Intake</label><input id="ua_intake" placeholder="e.g. Sep 2026" /></div>
+          <div class="field"><label>Application Number</label><input id="ua_application_number" /></div>
+          <div class="field"><label>Application Date</label><input id="ua_application_date" type="date" /></div>
+          <div class="field"><label>Status</label>
+            <select id="ua_status">
+              <option value="SUBMITTED">Submitted</option>
+              <option value="UNDER_REVIEW">Under Review</option>
+              <option value="OFFER_RECEIVED">Offer Received</option>
+              <option value="REJECTED">Rejected</option>
+            </select>
+          </div>
+        </div>
+        <button type="button" class="btn-sm" onclick="saveUniversityApplication()">Save University Application</button>
+      </fieldset>
+
+      <fieldset style="margin-bottom:16px">
+        <legend><strong>Offer Management</strong></legend>
+        <div class="form-inline-grid">
+          <div class="field"><label>University</label><input id="of_university" /></div>
+          <div class="field"><label>Course</label><input id="of_course" /></div>
+          <div class="field"><label>Intake</label><input id="of_intake" /></div>
+          <div class="field"><label>Offer Date</label><input id="of_offer_date" type="date" /></div>
+          <div class="field"><label>Conditional?</label>
+            <select id="of_is_conditional"><option value="false">Unconditional</option><option value="true">Conditional</option></select>
+          </div>
+          <div class="field"><label>Offer Status</label>
+            <select id="of_offer_status">
+              <option value="RECEIVED">Received</option>
+              <option value="ACCEPTED">Accepted</option>
+              <option value="DECLINED">Declined</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label>Conditions (if conditional)</label><textarea id="of_conditions" rows="2"></textarea></div>
+        <button type="button" class="btn-sm" onclick="saveOffer()">Save Offer</button>
+      </fieldset>
+
+      <fieldset style="margin-bottom:16px">
+        <legend><strong>Visa Application</strong></legend>
+        <div class="form-inline-grid">
+          <div class="field"><label>Application / Reference Number</label><input id="va_application_number" /></div>
+          <div class="field"><label>Submission Date</label><input id="va_submission_date" type="date" /></div>
+          <div class="field"><label>Status</label>
+            <select id="va_status">
+              <option value="PREPARING">Preparing</option>
+              <option value="SUBMITTED">Submitted</option>
+              <option value="UNDER_REVIEW">Under Review</option>
+              <option value="APPROVED">Approved</option>
+              <option value="REJECTED">Rejected</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label>Notes / Supporting Documents</label><textarea id="va_notes" rows="2"></textarea></div>
+        <button type="button" class="btn-sm" onclick="saveVisaApplication()">Save Visa Application</button>
+      </fieldset>
+
+      <fieldset style="margin-bottom:16px">
+        <legend><strong>Appointment &amp; Biometrics</strong></legend>
+        <div class="form-inline-grid">
+          <div class="field"><label>Appointment Date</label><input id="ap_appointment_date" type="date" /></div>
+          <div class="field"><label>Appointment Time</label><input id="ap_appointment_time" placeholder="e.g. 10:30 AM" /></div>
+          <div class="field"><label>Location</label><input id="ap_location" /></div>
+          <div class="field"><label>Booking Reference</label><input id="ap_booking_reference" /></div>
+          <div class="field"><label>Rescheduled?</label>
+            <select id="ap_is_rescheduled"><option value="false">No</option><option value="true">Yes</option></select>
+          </div>
+          <div class="field"><label>Biometrics Date</label><input id="ap_biometrics_date" type="date" /></div>
+          <div class="field"><label>Biometrics Completed?</label>
+            <select id="ap_biometrics_completed"><option value="false">No</option><option value="true">Yes</option></select>
+          </div>
+        </div>
+        <button type="button" class="btn-sm" onclick="saveAppointment()">Save Appointment</button>
+      </fieldset>
+<fieldset style="margin-bottom:16px">
+  <legend><strong>Pre-Departure</strong></legend>
+
+  <div class="form-inline-grid">
+
+    <div class="field">
+      <label>Pre-Departure Briefing</label>
+      <select id="pd_briefing_completed">
+        <option value="false">Pending</option>
+        <option value="true">Completed</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Documents Confirmed</label>
+      <select id="pd_documents_confirmed">
+        <option value="false">No</option>
+        <option value="true">Yes</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Accommodation Confirmed</label>
+      <select id="pd_accommodation_confirmed">
+        <option value="false">No</option>
+        <option value="true">Yes</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Travel Guidance Completed</label>
+      <select id="pd_travel_guidance_completed">
+        <option value="false">Pending</option>
+        <option value="true">Completed</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Departure Date</label>
+      <input id="pd_departure_date" type="date" />
+    </div>
+
+  </div>
+
+  <div class="field">
+    <label>Notes</label>
+    <textarea id="pd_notes" rows="3"></textarea>
+  </div>
+
+  <button type="button" class="btn-sm" onclick="savePreDeparture()">
+  Save Pre-Departure
+</button>
+</fieldset>
+<fieldset style="margin-bottom:16px">
+  <legend><strong>Travel / Arrival</strong></legend>
+
+  <div class="form-inline-grid">
+
+    <div class="field">
+      <label>Flight Number</label>
+      <input id="ta_flight_number" />
+    </div>
+
+    <div class="field">
+      <label>Departure Date</label>
+      <input id="ta_departure_date" type="date" />
+    </div>
+
+    <div class="field">
+      <label>Arrival Date</label>
+      <input id="ta_arrival_date" type="date" />
+    </div>
+
+    <div class="field">
+      <label>Departure City</label>
+      <input id="ta_departure_city" />
+    </div>
+
+    <div class="field">
+      <label>Arrival City</label>
+      <input id="ta_arrival_city" />
+    </div>
+
+    <div class="field">
+      <label>Travel Confirmed</label>
+      <select id="ta_travel_confirmed">
+        <option value="false">No</option>
+        <option value="true">Yes</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Arrival Confirmed</label>
+      <select id="ta_arrival_confirmed">
+        <option value="false">No</option>
+        <option value="true">Yes</option>
+      </select>
+    </div>
+
+  </div>
+
+  <div class="field">
+    <label>Notes</label>
+    <textarea id="ta_notes" rows="3"></textarea>
+  </div>
+
+  <button type="button" class="btn-sm" onclick="saveTravelArrival()">
+    Save Travel / Arrival
+  </button>
+</fieldset>
+<fieldset style="margin-bottom:16px">
+  <legend><strong>Student Onboarding</strong></legend>
+
+  <div class="form-inline-grid">
+
+  <div class="field">
+    <label>Student Arrived</label>
+    <select id="so_student_arrived">
+      <option value="false">No</option>
+      <option value="true">Yes</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label>University Joined</label>
+    <select id="so_university_joined">
+      <option value="false">No</option>
+      <option value="true">Yes</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label>Accommodation Confirmed</label>
+    <select id="so_accommodation_confirmed">
+      <option value="false">No</option>
+      <option value="true">Yes</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label>Onboarding Completed</label>
+    <select id="so_onboarding_completed">
+      <option value="false">No</option>
+      <option value="true">Yes</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label>Joining Date</label>
+    <input id="so_joining_date" type="date" />
+  </div>
+
+</div>
+
+  <div class="field">
+    <label>Notes</label>
+    <textarea id="so_notes" rows="3"></textarea>
+  </div>
+
+  <button type="button" class="btn-sm" onclick="saveStudentOnboarding()">
+    Save Student Onboarding
+  </button>
+</fieldset>
+
+
+
+<div class="modal-actions">
+  <button type="button" class="btn-sm outline" id="closeCaseDetails">Close</button>
+</div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/cases.js"></script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Quality Audit — VJC Ops Portal</title>
+<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <div class="sidebar" id="sidebar"></div>
+    <div class="main">
+            <div class="topbar">
+        <h1>Quality Audit Hub</h1>
+        <div class="who">Recorded verification call → 1–10 scorecard → 7+ required to pass</div>
+      </div>
+
+      <div class="stat-grid" id="auditStatGrid"></div>
+
+      <div class="audit-filter-bar">
+        <button type="button" class="audit-filter-btn" id="pendingAuditBtn">
+          📋 Pending Verification Calls
+        </button>
+
+        <button type="button" class="audit-filter-btn" id="approvedAuditBtn">
+          ✅ Approved Audits
+        </button>
+
+        <button type="button" class="audit-filter-btn" id="rejectedAuditBtn">
+          ❌ Rejected Audits
+        </button>
+      </div>
+
+      <div class="section-card" id="pendingAuditSection">
+        <h3>Pending Verification Calls</h3>
+        <table>
+          <thead><tr><th>Student</th><th>Country</th><th>Visa</th><th>Counselor</th><th></th></tr></thead>
+          <tbody id="pendingBody"><tr><td colspan="5" class="empty-state">Loading…</td></tr></tbody>
+        </table>
+
+        <div class="audit-pagination" id="pendingPagination"></div>
+      </div>
+
+            <div class="section-card" id="historyAuditSection">
+        <h3>Audit History</h3>
+        <table>
+          <thead><tr><th>Student</th><th>Auditor</th><th>Score</th><th>Result</th><th>Remarks</th><th>Audio</th><th>Actions</th></tr></thead>
+          <tbody id="historyBody"><tr><td colspan="7" class="empty-state">Loading…</td></tbody>
+        </table>
+
+        <div class="audit-pagination" id="historyPagination"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalOverlay" style="display:none">
+    <div class="modal-box">
+      <h3 id="modalTitle">Verification Call — Scorecard</h3>
+      <form id="auditForm">
+        <input type="hidden" id="modalLeadId" />
+        <div id="invoiceDetails" style="margin-bottom: 20px;"></div>
+        <div class="checklist-item">
+          <input type="checkbox" id="chk1" checked />
+          <label for="chk1">Fees &amp; installment commitments match the signed agreement</label>
+        </div>
+        <div class="checklist-item">
+          <input type="checkbox" id="chk2" checked />
+          <label for="chk2">No unauthorized/impossible promises made (guaranteed visa, fake docs)</label>
+        </div>
+        <div class="checklist-item">
+          <input type="checkbox" id="chk3" checked />
+          <label for="chk3">Student understands visa approval is at embassy's sole discretion</label>
+        </div>
+
+        <div class="score-row">
+          <label style="font-size:13px;color:var(--text-muted);white-space:nowrap">Score (1–10)</label>
+          <input type="range" id="scoreRange" min="1" max="10" value="8" />
+          <div class="score-val" id="scoreVal">8</div>
+        </div>
+
+        <div class="field">
+          <label>Call Audio (mp3 / wav / m4a)</label>
+          <input type="file" id="audioFile" accept=".mp3,.wav,.m4a,.ogg" />
+        </div>
+
+        <div class="field">
+          <label>Auditor Remarks</label>
+          <textarea id="remarks" rows="3" placeholder="Notes about the call... (required if score is below 7 — this becomes the rejection reason the counselor sees)"></textarea>        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-sm outline" id="cancelModal">Cancel</button>
+          <button type="submit" class="btn-sm orange">Submit Audit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="auditDetailsOverlay" style="display:none">
+    <div class="modal-box">
+      <h3 id="auditDetailsTitle">Audit Details</h3>
+
+      <div id="auditDetailsContent"></div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-sm outline" id="closeAuditDetails">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/audit.js"></script>
+</body>
+</html>

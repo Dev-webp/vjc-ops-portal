@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Dashboard — VJC Ops Portal</title>
+
+  <link rel="stylesheet" href="/css/style.css" />
+
+  <style>
+    /* =========================================================
+       VJC OPS — PROFESSIONAL OPERATIONS DASHBOARD
+       Dashboard-only styling.
+       Existing application functionality untouched.
+       ========================================================= */
+
+    :root {
+      --navy: #102a56;
+      --navy-2: #17396f;
+      --blue: #246bce;
+      --blue-soft: #eef5ff;
+      --text: #172b4d;
+      --muted: #75849a;
+      --border: #e6ebf2;
+      --surface: #ffffff;
+      --page: #f5f7fb;
+      --green: #159b62;
+      --green-soft: #eaf8f1;
+      --orange: #d98a16;
+      --orange-soft: #fff6e8;
+      --red: #d94358;
+      --red-soft: #fff0f2;
+      --purple: #7655d8;
+      --purple-soft: #f2efff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--page);
+    }
+
+    .dashboard-page {
+      padding: 28px 30px 40px;
+      min-height: 100vh;
+    }
+
+    /* =========================================================
+       TOP HEADER
+       ========================================================= */
+
+    .dashboard-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 25px;
+      margin-bottom: 25px;
+    }
+
+    .dashboard-welcome h1 {
+      margin: 0;
+      color: var(--navy);
+      font-size: 28px;
+      font-weight: 750;
+      letter-spacing: -0.5px;
+    }
+
+    .dashboard-welcome p {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .dashboard-header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .dashboard-search {
+      width: 300px;
+      height: 42px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 0 15px;
+      color: var(--text);
+      outline: none;
+      font-size: 12px;
+    }
+
+    .dashboard-search:focus {
+      border-color: #b9d1f2;
+      box-shadow: 0 0 0 3px rgba(36, 107, 206, 0.07);
+    }
+
+    .dashboard-date {
+      min-width: 150px;
+      height: 42px;
+      padding: 0 15px;
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text);
+      font-size: 12px;
+    }
+
+    .dashboard-date-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--blue-soft);
+      color: var(--blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    /* =========================================================
+       KPI CARDS
+       ========================================================= */
+
+    .dashboard-kpis {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 15px;
+      margin-bottom: 18px;
+    }
+
+    .dashboard-kpi {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--blue);
+  border-radius: 12px;
+  padding: 18px 19px;
+  min-height: 126px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(18, 42, 86, 0.035);
+}
+
+.dashboard-kpi.warning {
+  border-left-color: var(--orange);
+}
+
+.dashboard-kpi.success {
+  border-left-color: var(--green);
+}
+
+.dashboard-kpi.danger {
+  border-left-color: var(--red);
+}
+
+.dashboard-kpi::after {
+  content: "";
+  position: absolute;
+  width: 85px;
+  height: 85px;
+  right: -35px;
+  bottom: -35px;
+  border-radius: 50%;
+  background: #f5f8fc;
+}
+
+.dashboard-kpi-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dashboard-kpi-label {
+  font-size: 10px;
+  font-weight: 750;
+  color: #718099;
+  text-transform: uppercase;
+  letter-spacing: .45px;
+}
+
+.dashboard-kpi-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 17px;
+  font-weight: 700;
+  position: relative;
+  z-index: 2;
+}
+
+.dashboard-kpi.warning .dashboard-kpi-icon {
+  background: var(--orange-soft);
+  color: var(--orange);
+}
+
+.dashboard-kpi.success .dashboard-kpi-icon {
+  background: var(--green-soft);
+  color: var(--green);
+}
+
+.dashboard-kpi.danger .dashboard-kpi-icon {
+  background: var(--red-soft);
+  color: var(--red);
+}
+
+.dashboard-kpi-value {
+  margin-top: 13px;
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 750;
+  color: var(--navy);
+}
+
+.dashboard-kpi-sub {
+  margin-top: 7px;
+  font-size: 11px;
+  color: #8996a9;
+}
+    /* =========================================================
+       HIDDEN COMPATIBILITY CONTAINERS
+       Existing dashboard.js writes to these.
+       ========================================================= */
+
+    #auditStatGrid,
+    #caseStatGrid {
+      display: none !important;
+    }
+
+    /* =========================================================
+       MAIN AREA
+       ========================================================= */
+
+    .dashboard-main-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.75fr) minmax(290px, .65fr);
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .dashboard-panel {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      box-shadow: 0 4px 16px rgba(18, 42, 86, 0.035);
+      overflow: hidden;
+    }
+
+    .dashboard-panel-header {
+      padding: 18px 20px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 15px;
+    }
+
+    .dashboard-panel-title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 750;
+      color: var(--navy);
+    }
+
+    .dashboard-panel-subtitle {
+      margin: 5px 0 0;
+      font-size: 11px;
+      color: #8592a5;
+    }
+
+    .dashboard-filter {
+      height: 34px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      color: #53647d;
+      padding: 0 10px;
+      font-size: 11px;
+      outline: none;
+    }
+
+    /* =========================================================
+       CASE PIPELINE
+       ========================================================= */
+
+    .case-pipeline {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      padding: 10px 20px 22px;
+      gap: 9px;
+    }
+
+    .pipeline-stage {
+      position: relative;
+      min-height: 132px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fcfdff;
+      padding: 15px 13px 17px;
+      overflow: visible;
+    }
+
+    .pipeline-stage:nth-child(1) {
+      border-top: 3px solid #3182ce;
+    }
+
+    .pipeline-stage:nth-child(2) {
+      border-top: 3px solid #d98a16;
+    }
+
+    .pipeline-stage:nth-child(3) {
+      border-top: 3px solid #7655d8;
+    }
+
+    .pipeline-stage:nth-child(4) {
+      border-top: 3px solid #159b62;
+    }
+
+    .pipeline-stage:nth-child(5) {
+      border-top: 3px solid #246bce;
+    }
+
+    .pipeline-stage:not(:last-child)::after {
+      content: "›";
+      position: absolute;
+      right: -12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 23px;
+      height: 23px;
+      border-radius: 50%;
+      background: #fff;
+      border: 1px solid #dfe6ef;
+      color: #6d7e96;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      z-index: 4;
+    }
+
+    .pipeline-stage-label {
+      font-size: 10px;
+      font-weight: 750;
+      color: #687991;
+    }
+
+    .pipeline-stage-value {
+      margin-top: 17px;
+      font-size: 27px;
+      font-weight: 750;
+      color: var(--navy);
+    }
+
+    .pipeline-stage-status {
+      margin-top: 5px;
+      font-size: 10px;
+      color: #8a96a7;
+    }
+
+    .pipeline-stage-line {
+      position: absolute;
+      left: 13px;
+      right: 13px;
+      bottom: 10px;
+      height: 3px;
+      border-radius: 4px;
+      background: #edf1f6;
+      overflow: hidden;
+    }
+
+    .pipeline-stage-line span {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: #3182ce;
+      border-radius: inherit;
+    }
+
+    /* =========================================================
+       QUICK ACTIONS
+       ========================================================= */
+
+    .quick-actions {
+      padding: 10px 17px 19px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .quick-action {
+      min-height: 100px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      text-decoration: none;
+      background: #fcfdff;
+      transition: .18s ease;
+    }
+
+    .quick-action:hover {
+      transform: translateY(-2px);
+      border-color: #cbd9eb;
+      box-shadow: 0 7px 18px rgba(18, 42, 86, .06);
+    }
+
+    .quick-action-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 11px;
+      background: var(--blue-soft);
+      color: var(--blue);
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .quick-action:nth-child(2) .quick-action-icon {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    .quick-action:nth-child(3) .quick-action-icon {
+      background: var(--orange-soft);
+      color: var(--orange);
+    }
+
+    .quick-action:nth-child(4) .quick-action-icon {
+      background: var(--purple-soft);
+      color: var(--purple);
+    }
+
+    .quick-action-title {
+      font-size: 11px;
+      font-weight: 750;
+      color: var(--navy);
+    }
+
+    .quick-action-text {
+      margin-top: 4px;
+      color: #8793a6;
+      font-size: 9px;
+    }
+
+    /* =========================================================
+       BOTTOM GRID
+       ========================================================= */
+
+    .dashboard-bottom-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(230px, .75fr) minmax(245px, .75fr);
+      gap: 18px;
+    }
+
+    /* =========================================================
+       AUDIT TABLE
+       ========================================================= */
+
+    .dashboard-table-wrap {
+      padding: 6px 18px 17px;
+      overflow-x: auto;
+    }
+
+    .dashboard-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .dashboard-table th {
+      padding: 10px;
+      background: #f7f9fc;
+      color: #77869c;
+      font-size: 9px;
+      font-weight: 750;
+      text-transform: uppercase;
+      text-align: left;
+      letter-spacing: .4px;
+    }
+
+    .dashboard-table td {
+      padding: 12px 10px;
+      border-bottom: 1px solid #edf1f5;
+      color: #425672;
+      font-size: 11px;
+    }
+
+    .dashboard-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 9px;
+      font-weight: 750;
+    }
+
+    .status-pill.approved {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    .status-pill.rejected {
+      background: var(--red-soft);
+      color: var(--red);
+    }
+
+    .status-pill.pending {
+      background: var(--orange-soft);
+      color: var(--orange);
+    }
+.audit-stage-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 9px;
+  border-radius: 6px;
+  font-size: 9px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.audit-stage-pill.counselor {
+  background: #e8f4ff;
+  color: #2878c7;
+}
+
+.audit-stage-pill.quality-audit {
+  background: #fff1df;
+  color: #d88916;
+}
+
+.audit-stage-pill.ops {
+  background: #f0eaff;
+  color: #7655d8;
+}
+
+.audit-stage-pill.case-officer {
+  background: #ffe8ed;
+  color: #d94358;
+}
+
+.audit-stage-pill.visa-outcome {
+  background: #e7f8ef;
+  color: #159b62;
+}
+    /* =========================================================
+       CASE STATUS
+       ========================================================= */
+
+    .case-status-body {
+      padding: 8px 20px 20px;
+    }
+
+    .case-status-visual {
+      width: 125px;
+      height: 125px;
+      margin: 8px auto 18px;
+      border-radius: 50%;
+      background:
+        conic-gradient(
+          #3182ce 0deg 150deg,
+          #7655d8 150deg 230deg,
+          #159b62 230deg 285deg,
+          #d98a16 285deg 320deg,
+          #e7edf4 320deg 360deg
+        );
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .case-status-inner {
+      width: 82px;
+      height: 82px;
+      background: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    .case-status-inner strong {
+      font-size: 24px;
+      color: var(--navy);
+    }
+
+    .case-status-inner span {
+      margin-top: 2px;
+      font-size: 9px;
+      color: #8b97a8;
+    }
+
+    .case-status-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .case-status-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 10px;
+      color: #596b84;
+    }
+
+    .case-status-name {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .case-status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #3182ce;
+    }
+
+    .case-status-item:nth-child(2) .case-status-dot {
+      background: #7655d8;
+    }
+
+    .case-status-item:nth-child(3) .case-status-dot {
+      background: #159b62;
+    }
+
+    .case-status-item:nth-child(4) .case-status-dot {
+      background: #d98a16;
+    }
+
+    .case-status-item:nth-child(5) .case-status-dot {
+      background: #d94358;
+    }
+
+    .case-status-count {
+      color: var(--navy);
+      font-weight: 750;
+    }
+
+    /* =========================================================
+       TODAY'S TASKS
+       ========================================================= */
+
+    .dashboard-tasks {
+      padding: 7px 19px 18px;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      padding: 11px 0;
+      border-bottom: 1px solid #edf1f5;
+    }
+
+    .task-item:last-child {
+      border-bottom: none;
+    }
+
+    .task-check {
+      width: 14px;
+      height: 14px;
+      margin-top: 1px;
+      accent-color: var(--blue);
+    }
+
+    .task-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .task-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: #3b506d;
+      line-height: 1.35;
+    }
+
+    .task-meta {
+      margin-top: 3px;
+      font-size: 9px;
+      color: #8c98aa;
+    }
+
+    .task-priority {
+      flex-shrink: 0;
+      padding: 4px 7px;
+      border-radius: 999px;
+      font-size: 8px;
+      font-weight: 750;
+    }
+
+    .task-priority.high {
+      background: var(--red-soft);
+      color: var(--red);
+    }
+
+    .task-priority.medium {
+      background: var(--orange-soft);
+      color: var(--orange);
+    }
+
+    .task-priority.low {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    /* =========================================================
+       LOADING / EMPTY
+       ========================================================= */
+
+    .dashboard-loading,
+    .dashboard-empty {
+      padding: 25px 10px;
+      text-align: center;
+      color: #8b97a8;
+      font-size: 11px;
+    }
+
+    /* =========================================================
+       RESPONSIVE
+       ========================================================= */
+
+    @media (max-width: 1250px) {
+
+      .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .dashboard-header-right {
+        width: 100%;
+      }
+
+      .dashboard-search {
+        flex: 1;
+      }
+
+      .dashboard-kpis {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .dashboard-main-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .dashboard-bottom-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .dashboard-bottom-grid .dashboard-panel:first-child {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 900px) {
+
+      .case-pipeline {
+        grid-template-columns: 1fr;
+      }
+
+      .pipeline-stage:not(:last-child)::after {
+        display: none;
+      }
+
+      .dashboard-bottom-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .dashboard-bottom-grid .dashboard-panel:first-child {
+        grid-column: auto;
+      }
+    }
+
+    @media (max-width: 650px) {
+
+      .dashboard-page {
+        padding: 20px 15px 30px;
+      }
+
+      .dashboard-kpis {
+        grid-template-columns: 1fr;
+      }
+
+      .dashboard-header-right {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .dashboard-search {
+        width: 100%;
+      }
+
+      .dashboard-date {
+        width: 100%;
+      }
+
+      .quick-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app-shell">
+
+    <!-- Existing dynamic sidebar -->
+    <div class="sidebar" id="sidebar"></div>
+
+    <main class="main dashboard-page">
+
+      <!-- =====================================================
+           HEADER
+           ===================================================== -->
+
+      <section class="dashboard-header">
+
+  <div class="dashboard-welcome">
+
+    <h1 id="dashboardWelcomeTitle">
+      Good Morning, User 👋
+    </h1>
+
+    <p id="dashboardGreeting">
+      Here's a quick overview of your OPS operations.
+    </p>
+
+  </div>
+
+  <div class="dashboard-header-right">
+
+    <input
+      type="search"
+      class="dashboard-search"
+      placeholder="Search leads, clients, cases, agreements..."
+      autocomplete="off"
+    />
+
+    <div class="dashboard-date">
+
+      <div class="dashboard-date-icon">
+        ▣
+      </div>
+
+      <div>
+        <strong id="dashboardDate">Today</strong>
+        <div id="dashboardTime">Live</div>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+      <!-- =====================================================
+           KPI CARDS
+           ===================================================== -->
+
+      <section class="dashboard-kpis" id="statGrid">
+
+  <!-- TOTAL LEADS -->
+  <div class="dashboard-kpi">
+
+    <div class="dashboard-kpi-head">
+
+      <div class="dashboard-kpi-label">
+        Total Leads
+      </div>
+
+      <div class="dashboard-kpi-icon">
+        👥
+      </div>
+
+    </div>
+
+    <div class="dashboard-kpi-value">
+      –
+    </div>
+
+    <div class="dashboard-kpi-sub">
+      Current pipeline
+    </div>
+
+  </div>
+
+
+  <!-- PENDING AUDIT -->
+  <div class="dashboard-kpi warning">
+
+    <div class="dashboard-kpi-head">
+
+      <div class="dashboard-kpi-label">
+        Pending Audit
+      </div>
+
+      <div class="dashboard-kpi-icon">
+        ⏳
+      </div>
+
+    </div>
+
+    <div class="dashboard-kpi-value">
+      –
+    </div>
+
+    <div class="dashboard-kpi-sub">
+      Awaiting review
+    </div>
+
+  </div>
+
+
+  <!-- AUDIT APPROVED -->
+  <div class="dashboard-kpi success">
+
+    <div class="dashboard-kpi-head">
+
+      <div class="dashboard-kpi-label">
+        Audit Approved
+      </div>
+
+      <div class="dashboard-kpi-icon">
+        ✓
+      </div>
+
+    </div>
+
+    <div class="dashboard-kpi-value">
+      –
+    </div>
+
+    <div class="dashboard-kpi-sub">
+      Approved audits
+    </div>
+
+  </div>
+
+
+  <!-- CASES IN PROGRESS -->
+  <div class="dashboard-kpi danger">
+
+    <div class="dashboard-kpi-head">
+
+      <div class="dashboard-kpi-label">
+        Cases In Progress
+      </div>
+
+      <div class="dashboard-kpi-icon">
+        📁
+      </div>
+
+    </div>
+
+    <div class="dashboard-kpi-value">
+      –
+    </div>
+
+    <div class="dashboard-kpi-sub">
+      Active case work
+    </div>
+
+  </div>
+
+</section>
+
+      <!-- =====================================================
+           EXISTING JS COMPATIBILITY
+           dashboard.js expects these IDs.
+           ===================================================== -->
+
+      <div id="auditStatGrid"></div>
+      <div id="caseStatGrid"></div>
+
+
+      <!-- =====================================================
+           CASE PIPELINE + QUICK ACTIONS
+           ===================================================== -->
+
+      <section class="dashboard-main-grid">
+
+        <!-- CASE PIPELINE -->
+
+        <div class="dashboard-panel">
+
+          <div class="dashboard-panel-header">
+
+            <div>
+
+              <h2 class="dashboard-panel-title">
+                Case Filing — Stage Overview
+              </h2>
+
+              <p class="dashboard-panel-subtitle">
+                Current cases across the operational workflow
+              </p>
+
+            </div>
+
+            <select
+              class="dashboard-filter"
+              id="dashboardPeriod"
+            >
+              <option value="current">
+                Current
+              </option>
+            </select>
+
+          </div>
+
+
+          <div
+            class="case-pipeline"
+            id="casePipeline"
+          >
+
+            <div class="pipeline-stage">
+
+              <div class="pipeline-stage-label">
+                Counselor
+              </div>
+
+              <div class="pipeline-stage-value">
+                –
+              </div>
+
+              <div class="pipeline-stage-status">
+                Leads Assigned
+              </div>
+
+              <div class="pipeline-stage-line">
+                <span></span>
+              </div>
+
+            </div>
+
+
+            <div class="pipeline-stage">
+
+              <div class="pipeline-stage-label">
+                Quality Audit
+              </div>
+
+              <div class="pipeline-stage-value">
+                –
+              </div>
+
+              <div class="pipeline-stage-status">
+                In Audit
+              </div>
+
+              <div class="pipeline-stage-line">
+                <span></span>
+              </div>
+
+            </div>
+
+
+            <div class="pipeline-stage">
+
+              <div class="pipeline-stage-label">
+                OPS
+              </div>
+
+              <div class="pipeline-stage-value">
+                –
+              </div>
+
+              <div class="pipeline-stage-status">
+                In Process
+              </div>
+
+              <div class="pipeline-stage-line">
+                <span></span>
+              </div>
+
+            </div>
+
+
+            <div class="pipeline-stage">
+
+              <div class="pipeline-stage-label">
+                Case Officer
+              </div>
+
+              <div class="pipeline-stage-value">
+                –
+              </div>
+
+              <div class="pipeline-stage-status">
+                File Preparation
+              </div>
+
+              <div class="pipeline-stage-line">
+                <span></span>
+              </div>
+
+            </div>
+
+
+            <div class="pipeline-stage">
+
+              <div class="pipeline-stage-label">
+                Visa Outcome
+              </div>
+
+              <div class="pipeline-stage-value">
+                –
+              </div>
+
+              <div class="pipeline-stage-status">
+                Completed
+              </div>
+
+              <div class="pipeline-stage-line">
+                <span></span>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- QUICK ACTIONS -->
+
+        <div class="dashboard-panel">
+
+          <div class="dashboard-panel-header">
+
+            <div>
+
+              <h2 class="dashboard-panel-title">
+                Quick Actions
+              </h2>
+
+              <p class="dashboard-panel-subtitle">
+                Common operational actions
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="quick-actions">
+
+            <a
+              href="/leads.html"
+              class="quick-action"
+            >
+
+              <div class="quick-action-icon">
+                +
+              </div>
+
+              <div class="quick-action-title">
+                Leads / Agreements
+              </div>
+
+              <div class="quick-action-text">
+                View lead pipeline
+              </div>
+
+            </a>
+
+
+            <a
+              href="/audit.html"
+              class="quick-action"
+            >
+
+              <div class="quick-action-icon">
+                ✓
+              </div>
+
+              <div class="quick-action-title">
+                Quality Audit
+              </div>
+
+              <div class="quick-action-text">
+                Review audit work
+              </div>
+
+            </a>
+
+
+            <a
+              href="/cases.html"
+              class="quick-action"
+            >
+
+              <div class="quick-action-icon">
+                □
+              </div>
+
+              <div class="quick-action-title">
+                Case Filing
+              </div>
+
+              <div class="quick-action-text">
+                Manage cases
+              </div>
+
+            </a>
+
+
+            <a
+              href="/view-employees.html"
+              class="quick-action"
+            >
+
+              <div class="quick-action-icon">
+                ●
+              </div>
+
+              <div class="quick-action-title">
+                Employees
+              </div>
+
+              <div class="quick-action-text">
+                Manage employees
+              </div>
+
+            </a>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================================
+           BOTTOM DASHBOARD
+           ===================================================== -->
+
+      <section class="dashboard-bottom-grid">
+
+
+        <!-- RECENT AUDIT -->
+
+        <div class="dashboard-panel">
+
+          <div class="dashboard-panel-header">
+
+            <div>
+
+              <h2 class="dashboard-panel-title">
+                Recent Audit Activity
+              </h2>
+
+              <p class="dashboard-panel-subtitle">
+                Latest quality audit activity
+              </p>
+
+            </div>
+
+            <a
+              href="/audit.html"
+              style="
+                text-decoration:none;
+                color:#246bce;
+                font-size:11px;
+                font-weight:750;
+              "
+            >
+              View All →
+            </a>
+
+          </div>
+
+
+          <div class="dashboard-table-wrap">
+
+            <table class="dashboard-table">
+
+              <thead>
+  <tr>
+    <th>#</th>
+    <th>Student</th>
+    <th>Stage</th>
+    <th>Score</th>
+    <th>Result</th>
+    <th>Date</th>
+  </tr>
+</thead>
+
+
+              <tbody id="recentAuditsBody">
+
+                <tr>
+
+                  <td colspan="6">
+
+                    <div class="dashboard-loading">
+                      Loading...
+                    </div>
+
+                  </td>
+
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+
+        <!-- CASE STATUS -->
+
+        <div class="dashboard-panel">
+
+          <div class="dashboard-panel-header">
+
+            <div>
+
+              <h2 class="dashboard-panel-title">
+                Case Status
+              </h2>
+
+              <p class="dashboard-panel-subtitle">
+                Current case distribution
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="case-status-body">
+
+            <div class="case-status-visual">
+
+              <div class="case-status-inner">
+
+                <strong id="caseStatusTotal">
+                  –
+                </strong>
+
+                <span>
+                  Total Cases
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <div class="case-status-list">
+
+
+              <div class="case-status-item">
+
+                <div class="case-status-name">
+
+                  <span class="case-status-dot"></span>
+
+                  Leads
+
+                </div>
+
+                <span
+                  class="case-status-count"
+                  id="statusLeads"
+                >
+                  –
+                </span>
+
+              </div>
+
+
+              <div class="case-status-item">
+
+                <div class="case-status-name">
+
+                  <span class="case-status-dot"></span>
+
+                  Quality Audit
+
+                </div>
+
+                <span
+                  class="case-status-count"
+                  id="statusAudit"
+                >
+                  –
+                </span>
+
+              </div>
+
+
+              <div class="case-status-item">
+
+                <div class="case-status-name">
+
+                  <span class="case-status-dot"></span>
+
+                  OPS
+
+                </div>
+
+                <span
+                  class="case-status-count"
+                  id="statusOps"
+                >
+                  –
+                </span>
+
+              </div>
+
+
+              <div class="case-status-item">
+
+                <div class="case-status-name">
+
+                  <span class="case-status-dot"></span>
+
+                  Case Officer
+
+                </div>
+
+                <span
+                  class="case-status-count"
+                  id="statusCaseOfficer"
+                >
+                  –
+                </span>
+
+              </div>
+
+
+              <div class="case-status-item">
+
+                <div class="case-status-name">
+
+                  <span class="case-status-dot"></span>
+
+                  Visa Outcome
+
+                </div>
+
+                <span
+                  class="case-status-count"
+                  id="statusVisa"
+                >
+                  –
+                </span>
+
+              </div>
+
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- TODAY'S TASKS -->
+
+        <div class="dashboard-panel">
+
+          <div class="dashboard-panel-header">
+
+            <div>
+
+              <h2 class="dashboard-panel-title">
+                Today's Tasks
+              </h2>
+
+              <p class="dashboard-panel-subtitle">
+                Operational follow-ups
+              </p>
+
+            </div>
+
+            <a
+              href="/cases.html"
+              style="
+                text-decoration:none;
+                color:#246bce;
+                font-size:11px;
+                font-weight:750;
+              "
+            >
+              View All →
+            </a>
+
+          </div>
+
+
+          <div
+            class="dashboard-tasks"
+            id="dashboardTasks"
+          >
+
+            <div class="dashboard-empty">
+              Loading...
+            </div>
+
+          </div>
+
+        </div>
+
+
+      </section>
+
+    </main>
+
+  </div>
+
+
+  <!-- Existing shared functionality -->
+<script src="/js/api.js"></script>
+<!-- Existing dashboard logic -->
+<script src="/js/dashboard.js?v=20261001"></script>
+
+<script>
+(async () => {
+  try {
+    const result = await apiFetch('/auth/me');
+
+    const user = result.user;
+
+    if (!user) return;
+
+    const name =
+      user.name ||
+      user.email ||
+      'User';
+
+    const title =
+      document.getElementById('dashboardWelcomeTitle');
+
+    if (title) {
+      const hour = new Date().getHours();
+
+      let greeting = 'Good Morning';
+
+      if (hour >= 12 && hour < 17) {
+        greeting = 'Good Afternoon';
+      } else if (hour >= 17) {
+        greeting = 'Good Evening';
+      }
+
+      title.textContent = `${greeting}, ${name} 👋`;
+    }
+
+  } catch (err) {
+    console.error('Unable to load dashboard user:', err);
+  }
+})();
+</script>
+
+</body>
+</html>
