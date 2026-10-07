@@ -372,7 +372,28 @@ async function saveCorrectionAndResubmit() {
    TABS
 ========================================= */
 
+document.getElementById('leadTabs').addEventListener('click', (event) => {
+  const btn = event.target.closest('.tab-btn');
+
+  if (!btn) {
+    return;
+  }
+
+  activeTab = btn.dataset.tab;
+  leadsCurrentPage = 1;
+
+  document
+    .querySelectorAll('#leadTabs .tab-btn')
+    .forEach((b) => {
+      b.classList.toggle('active', b === btn);
+    });
+
+  renderLeadsTable();
+});
+
+
 document.getElementById('leadSearch').addEventListener('input', () => {
+  leadsCurrentPage = 1;
   renderLeadsTable();
 });
 
